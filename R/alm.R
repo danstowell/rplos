@@ -91,7 +91,8 @@
 #' @export
 alm <- function(doi = NULL, pmid = NULL, pmcid = NULL, mdid = NULL, url = 'http://alm.plos.org/api/v3/articles',
 								info = "totals", months = NULL, days = NULL, year = NULL, 
-								source = NULL, key = NULL, curl = getCurlHandle(), total_details = FALSE)
+								source = NULL, key = NULL, curl = getCurlHandle(), 
+                total_details = FALSE, write2couch = FALSE)
 {	
 	if(!info %in% c("summary","totals","history","detail")) {
 		stop("info must be one of summary, totals, history, or detail")
@@ -116,6 +117,11 @@ alm <- function(doi = NULL, pmid = NULL, pmcid = NULL, mdid = NULL, url = 'http:
 				if(names(id) == "doi") id <- gsub("/", "%2F", id)
 				args2 <- c(args, ids = id[[1]])
 				out <- getForm(url, .params = args2, curl = curl)
+				if(write2couch){
+				  thedude::dude_writedoc(dbname=getOption("rplos_couchdb"), doc=out, 
+				                         rodb=TRUE, baseurl=url, 
+				                         queryargs=RJSONIO::toJSON(args2, collapse=""))
+				} else { NULL }
 				tt <- fromJSON(out)
 # 				if(info=="summary"){ttt<-tt} else{ttt <- tt[[1]]$sources}
 			} else
@@ -133,6 +139,11 @@ alm <- function(doi = NULL, pmid = NULL, pmcid = NULL, mdid = NULL, url = 'http:
 							}
 							args2 <- c(args, ids = id2)
 							out <- getForm(url, .params = args2, curl = curl)
+							if(write2couch){
+							  thedude::dude_writedoc(dbname=getOption("rplos_couchdb"), doc=out, 
+							                         rodb=TRUE, baseurl=url, 
+							                         queryargs=RJSONIO::toJSON(args2, collapse=""))
+							} else { NULL }
 							tt <- fromJSON(out)
 # 							if(info=="summary"){tt} else { 
 # 								lapply(tt, function(x) x$article$sources) 
@@ -149,6 +160,11 @@ alm <- function(doi = NULL, pmid = NULL, pmcid = NULL, mdid = NULL, url = 'http:
 						}
 						args2 <- c(args, ids = id2)
 						out <- getForm(url, .params = args2, curl = curl)
+						if(write2couch){
+						  thedude::dude_writedoc(dbname=getOption("rplos_couchdb"), doc=out, 
+						                         rodb=TRUE, baseurl=url, 
+						                         queryargs=RJSONIO::toJSON(args2, collapse=""))
+						} else { NULL }
 						tt <- fromJSON(out)
 # 						if(info=="summary"){ttt<-tt} else { 
 # 							ttt <- lapply(tt, function(x) x$sources) 
