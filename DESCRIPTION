@@ -6,6 +6,8 @@ Description: A programmatic interface to the
     of Science journals for search.
 Title: Interface to PLoS Journals search API.
 License: CC0
+Author: Scott Chamberlain
+Maintainer: Scott Chamberlain <myrmecocystus@gmail.com>
 Authors@R: c(person("Scott", "Chamberlain", role = c("aut", "cre"),
     email = "myrmecocystus@gmail.com"),
     person("Carl", "Boettiger", role = "aut",
